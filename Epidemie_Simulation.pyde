@@ -231,7 +231,7 @@ def draw():
             if personen[counter].dead !=2:
                 import random
             #Farbcodes:  clour 0: gesund 60,252,18,255 colour 1: krank 242,0,0,255 colour 2: genesen 30,2,240,255 colour 3: tot 0,0,0,255
-            
+            #Movement: Bewegung der Personen in der X und Y Achse nach einer Zufallszahl
                 movement=random.randint(1,4)
                 if movement ==1 and personen[counter].positionx>=radius:
                     fill(personen[counter].colour1,personen[counter].colour2,personen[counter].colour3,personen[counter].colour4)
