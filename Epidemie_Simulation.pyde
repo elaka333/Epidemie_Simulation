@@ -43,7 +43,7 @@ movingMode5 = False
 pointerPos5 = 0
 pointerVal5 = 1.0
 
-#class mit Attributen coulour 1 bis 4 für den Farbcode, sick für erkrankt, sane für genesen und dead für tot.
+#class mit Attributen coulour 1 bis 4 für den Farbcode, sick für erkrankt, sane für genesen und dead für tot, zpanst für den Wert der Variable zeit bei einer Ansteckung.
 class Person():
     def __init__(self, positionx, positiony,colour1,colour2,colour3,colour4,sick,sane,dead,zpanst):
             self.positionx=positionx
@@ -58,6 +58,8 @@ class Person():
             self.zpanst=zpanst
 
 #Objekte werden in der Liste Personen erstellt, person[0] soll der Patient 0 sein. 
+#Restliche Personen bekommen einen Zufallswert für die Position und eine Zuweisung der Attribute.
+#Farbcodes:  Gesund: 60,252,18,255 ; krank: 242,0,0,255; genesen: 30,2,240,255; tot: 0,0,0,255
 def reset():
     global personen
     personen=[]        
@@ -74,10 +76,12 @@ def reset():
     personen[0].zpanst=1
     
 def setup():
-    global personen, erkrankt, spread, tkrank , pletal, pgenesen, tot, anzahl, breite, radius, speed, zeit, graphsick,graphsane,graphdead
+    global personen, erkrankt, spread, tkrank , pletal, pgenesen, tot, anzahl, breite, radius, speed, zeit
+    #reset erstellt die Klasse mit den Objekten und Attributen. 
     reset()
     size (breite + 710, breite)
     background (225,225)
+    #Variablen werden vorerst definiert, später durch die Regler überschrieben. 
     spread=100
     tkrank=1000000
     pletal=100
@@ -230,8 +234,7 @@ def draw():
                 
             if personen[counter].dead !=2:
                 import random
-            #Farbcodes:  clour 0: gesund 60,252,18,255 colour 1: krank 242,0,0,255 colour 2: genesen 30,2,240,255 colour 3: tot 0,0,0,255
-            #Movement: Bewegung der Personen in der X und Y Achse nach einer Zufallszahl
+            #Movement: Zufällige Bewegung der Personen um den Wert 1 in der X oder Y Achse mit der Beschränkung der Ränder der Darstellung, keine Bewegung, falls die Variable movement und die Bedingung nicht stimmen
                 movement=random.randint(1,4)
                 if movement ==1 and personen[counter].positionx>=radius:
                     fill(personen[counter].colour1,personen[counter].colour2,personen[counter].colour3,personen[counter].colour4)
@@ -278,12 +281,14 @@ def draw():
                     personen[counter].positiony=personen[counter].positiony
                 else:
                     pass
+           #Verstorbene bleiben am Ort. 
             else:
                 fill(personen[counter].colour1,personen[counter].colour2,personen[counter].colour3,personen[counter].colour4)
                 ellipse(personen[counter].positionx,personen[counter].positiony,radius,radius)
                 personen[counter].positionx=personen[counter].positionx
                 personen[counter].positiony=personen[counter].positiony
     
+        #Erkranken prüft die Position jeder Person in Personen mit den anderen. Berühren oder überschneiden sich die Kreise wird aufgrund der Verbreitungswahrscheinlichkeit entschieden, ob die betroffene Person erkrankt.
         def erkranken():
             global zeit
             for count2 in range (0,anzahl):
@@ -298,11 +303,11 @@ def draw():
                                             personen[count3].colour3=0
                                             personen[count3].colour4=255
                                             personen[count3].zpanst=zeit
-                                            print (count3, personen[count3].zpanst)
+                                            fill(242,0,0,255)
                                             line(personen[count2].positionx, personen[count2].positiony, personen[count3].positionx, personen[count3].positiony) 
                                     dec=0                    
     
-        # krankheitszahl () sählt die kranken personen in sick und gibt diese Zahl zurück
+        # krankheitszahl () sählt die kranken Personen in sick und gibt diese Zahl zurück.
         def krankheitszahl():
             global erkrankt, personen
             erkrankt=0
